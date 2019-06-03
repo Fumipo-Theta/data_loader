@@ -5,6 +5,7 @@ import re
 from func_helper import pip, tee, identity
 import func_helper.func_helper.iterator as it
 from tqdm import tqdm
+from multiprocessing.dummy import Pool
 
 from .i_lazy_reader import ILazyReader
 

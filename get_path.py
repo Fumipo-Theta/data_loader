@@ -28,7 +28,10 @@ def isMatchAll(patterns):
 
 class PathList:
     def __init__(self, pathList):
-        self.paths = pathList
+        self.paths = list(pathList)
+
+    def __add__(self, pathlist):
+        return PathList([*self.paths, *pathlist.paths])
 
     def directories(self, verbose=False):
         return pip(
@@ -55,6 +58,19 @@ class PathList:
                 )
             )
         )(self.paths)
+
+    @staticmethod
+    def search(*patterns):
+        def directory_from(*roots):
+            map_get_paths = it.mapping(pip(
+                getAllSubPath,
+                it.filtering(isMatchAll(patterns)),
+            ))
+
+            def concat(acc, e):
+                return [*acc, *e]
+            return PathList(it.reducing(concat)([])(map_get_paths(roots)))
+        return directory_from
 
 
 def getFileList(*patterns):

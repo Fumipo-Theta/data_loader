@@ -4,6 +4,7 @@ from .excel_reader import ExcelReader
 from ..get_path import PathList
 import pandas as pd
 import re
+from multiprocessing.dummy import Pool
 
 ext = {
     "csv": r'\.[cC](sv|SV)$',
@@ -11,22 +12,30 @@ ext = {
 }
 
 
+def parallel_read(meta, transformers):
+    def read(path):
+        reader = TableLoader.IReader(path)
+        reader.setPath(path)
+        reader.read(**meta)
+        reader.assemble(*transformers)
+        return reader.df
+    return read
+
+
 class TableLoader(IDataLoader):
     def __init__(self):
         pass
 
-    def read(self, path_like, meta={}, transformers=[]):
+    def read(self, path_like, meta={}, transformers=[], concat=True):
         paths = TableLoader.toPathList(path_like)
 
-        dfs = []
-        for path in paths:
-            reader = TableLoader.IReader(path)
-            reader.setPath(path)
-            reader.read(**meta)
-            reader.assemble(*transformers)
-            dfs.append(reader.df)
+        # with Pool() as p:
+        dfs = list(map(parallel_read(meta, transformers), paths))
 
-        return pd.concat(dfs, sort=True) if len(dfs) > 0 else []
+        if concat:
+            return pd.concat(dfs, sort=True) if len(dfs) > 0 else []
+        else:
+            dfs
 
     @staticmethod
     def IReader(path):
