@@ -60,7 +60,22 @@ class PathList:
         )(self.paths)
 
     @staticmethod
+    def match(*patterns):
+        def directory_from(*roots):
+            map_get_paths = it.mapping(pip(
+                getAllSubPath,
+                it.filtering(isMatchAll(patterns)),
+            ))
+
+            def concat(acc, e):
+                return [*acc, *e]
+            return PathList(it.reducing(concat)([])(map_get_paths(roots)))
+        return directory_from
+
+    @staticmethod
     def search(*patterns):
+        print("PathList.search is deplicated. Use PathList.match")
+
         def directory_from(*roots):
             map_get_paths = it.mapping(pip(
                 getAllSubPath,
