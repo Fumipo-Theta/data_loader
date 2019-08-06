@@ -2,7 +2,7 @@ import os
 import glob
 import re
 from func_helper import pip, tee, identity
-import func_helper.func_helper.iterator as it
+import iter_helper as it
 
 """
 与えられた正規表現パターン `patterns` に対し,

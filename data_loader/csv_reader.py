@@ -3,7 +3,7 @@ import chardet
 from chardet.universaldetector import UniversalDetector
 import re
 from func_helper import pip, tee, identity
-import func_helper.func_helper.iterator as it
+import iter_helper as it
 from tqdm import tqdm
 from multiprocessing.dummy import Pool
 
