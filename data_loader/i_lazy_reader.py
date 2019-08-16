@@ -1,22 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 
-class ILazyReader(ABC):
+class ILazyReader(metaclass=ABCMeta):
     def __ini__(self):
         pass
 
     @abstractmethod
-    def setPath(self, path):
-        pass
-
-    @abstractmethod
     def read(self):
-        pass
-
-    @abstractmethod
-    def assemble(self):
-        pass
-
-    @abstractmethod
-    def getDataFrame(self):
         pass

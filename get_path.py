@@ -87,6 +87,18 @@ class PathList:
             return PathList(it.reducing(concat)([])(map_get_paths(roots)))
         return directory_from
 
+    @staticmethod
+    def to_strings(pathLike):
+        if type(pathLike) is PathList:
+            return pathLike.files()
+        elif type(pathLike) in [list, tuple]:
+            return pathLike
+        elif type(pathLike) is str:
+            return [pathLike]
+        else:
+            print(pathLike)
+            raise TypeError("Invalid data source type.")
+
 
 def getFileList(*patterns):
     return lambda dirPath: pip(

@@ -2,6 +2,7 @@ from .i_data_loader import IDataLoader
 from .csv_reader import CsvReader
 from .excel_reader import ExcelReader
 from ..get_path import PathList
+from func_helper import identity
 import pandas as pd
 import re
 from multiprocessing.dummy import Pool
@@ -23,11 +24,24 @@ def parallel_read(meta, transformers):
 
 
 class TableLoader(IDataLoader):
-    def __init__(self):
-        pass
+    def __init__(self, path_like, meta={}, preprocessors=[]):
+        self.paths = PathList.to_strings(path_like)
+        self.read_option = meta
+        self.preprocessors = preprocessors
+
+    def query(self, filter_func=identity, concat=True):
+        return self.read(
+            self.paths,
+            self.read_option,
+            [
+                *self.preprocessors,
+                filter_func
+            ],
+            concat
+        )
 
     def read(self, path_like, meta={}, transformers=[], concat=True):
-        paths = TableLoader.toPathList(path_like)
+        paths = PathList.to_strings(path_like)
 
         # with Pool() as p:
         dfs = list(map(parallel_read(meta, transformers), paths))
@@ -47,15 +61,3 @@ class TableLoader(IDataLoader):
 
         else:
             raise SystemError(f"Invalid file type: {path}")
-
-    @staticmethod
-    def toPathList(pathLike):
-        if type(pathLike) is PathList:
-            return pathLike.files()
-        elif type(pathLike) in [list, tuple]:
-            return pathLike
-        elif type(pathLike) is str:
-            return [pathLike]
-        else:
-            print(pathLike)
-            raise TypeError("Invalid data source type.")
