@@ -26,7 +26,7 @@ def parallel_read(meta, transformers):
 
 class TableLoader(IDataLoader):
     def __init__(self, source="", meta={}, preprocessors=[]):
-        self.source = PathList.to_strings(path_like)
+        self.source = PathList.to_strings(source)
         self.read_option = meta
         self.preprocessors = preprocessors
 

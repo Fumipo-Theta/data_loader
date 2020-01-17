@@ -19,7 +19,7 @@ class DataFrameLoader(IDataLoader):
             ]
         )
 
-    @statickmethod
+    @staticmethod
     def read(source, meta={}, transformers=[identity]):
         return pip(*transformers)(
             source)

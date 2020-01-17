@@ -9,7 +9,7 @@ class IDataLoader(metaclass=abc.ABCMeta):
     def query(self, filter_func, **kwargs):
         pass
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def read(source, meta={}, transformers=[], **kwargs):
         pass
