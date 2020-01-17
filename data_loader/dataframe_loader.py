@@ -1,18 +1,17 @@
 from .i_data_loader import IDataLoader
 from func_helper import pip, identity
 import pandas as pd
-from ..get_path import PathList
 
 
 class DataFrameLoader(IDataLoader):
-    def __init__(self, path_like="", meta={}, preprocessors=[]):
-        self.paths = PathList.to_strings(path_like)
+    def __init__(self, source, meta={}, preprocessors=[]):
+        self.source = source
         self.read_option = meta
         self.preprocessors = preprocessors
 
     def query(self, filter_func=identity):
-        return self.read(
-            self.paths,
+        return DataFrameLoader.read(
+            self.source,
             self.read_option,
             [
                 *self.preprocessors,
@@ -20,6 +19,7 @@ class DataFrameLoader(IDataLoader):
             ]
         )
 
-    def read(self, data, meta={}, transformers=[identity]):
+    @statickmethod
+    def read(source, meta={}, transformers=[identity]):
         return pip(*transformers)(
-            data)
+            source)

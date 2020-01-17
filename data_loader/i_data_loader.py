@@ -2,10 +2,14 @@ import abc
 
 
 class IDataLoader(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def query(self, pathlike, meta={}, preprocessors=[], **kwargs):
+    def __init__(self, source, meta={}, preprocessors=[]):
         pass
 
     @abc.abstractmethod
-    def read(self, pathlike, meta={}, transformers=[], **kwargs):
+    def query(self, filter_func, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    @staticmethod
+    def read(source, meta={}, transformers=[], **kwargs):
         pass

@@ -6,7 +6,11 @@ class TestLoader(IDataLoader):
     def __init__(self):
         pass
 
-    def read(self, data, meta={}, transformers=[]):
+    def query(self):
+        return TestLoader.read()
+
+    @staticmethod
+    def read(source=None, meta={}, transformers=[]):
         return pd.DataFrame({
             "x": [0, 0.5, 1],
             "y": [0, 0.5, 1]

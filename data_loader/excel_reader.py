@@ -10,18 +10,9 @@ matchExcel = r"^(?!.*\~\$).*\.xlsx?$"
 
 
 class ExcelReader(ILazyReader):
-    def __init__(self, path: str=None, header: int=0, verbose: bool=False):
+    def __init__(self, path: str, verbose: bool=False):
         self.is_verbose = verbose
-        if path:
-            self.setPath(path, header)
-
-    @staticmethod
-    def create(*arg, **kwargs):
-        return ExcelReader(*arg, **kwargs)
-
-    def setPath(self, path: str, header: int=30):
         self.path = path
-        return self
 
     def read(self, header: int=0, **read_excel_kwargs):
 
@@ -43,14 +34,9 @@ class ExcelReader(ILazyReader):
 
         return pd.read_excel(path, **kwargs)
 
-    def assemble(self, *preprocesses: DataFrame_transformer):
+    def assemble(self, *preprocesses: DataFrame_transformer)->pd.DataFrame:
+
         preprocessor = pip(
-            *preprocesses
-        ) if preprocesses else identity
+            *preprocesses) if len(preprocesses) > 0 else identity
 
-        self.df = preprocessor(self.reader)
-
-        return self
-
-    def getDataFrame(self):
-        return self.df
+        return preprocessor(self.reader)

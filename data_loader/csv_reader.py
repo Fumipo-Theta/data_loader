@@ -26,19 +26,9 @@ class CsvReader(ILazyReader):
     reader.read(header = 10)
     """
 
-    def __init__(self, path: str=None, header: int=0, verbose: bool=False):
+    def __init__(self, path: str, verbose: bool=False):
         self.is_verbose = verbose
-        if path != None:
-            self.setPath(path, header)
-
-    @staticmethod
-    def create(path: str=None, header: int=0, verbose: bool=False):
-        return CsvReader(path, header, verbose)
-
-    def setPath(self, path: str, header: int=30):
         self.path = path
-        self.encoding = self.detect_encoding(path, header)
-        return self
 
     def detect_encoding(self, path: str, header: int):
         with open(path, mode='rb') as f:
@@ -85,9 +75,11 @@ class CsvReader(ILazyReader):
         self
         """
 
+        encoding = self.detect_encoding(self.path, header)
+
         arg = {
             "header": header,
-            "encoding": self.encoding,
+            "encoding": encoding,
             "chunksize": 100000,
             **read_csv_kwd
         }
@@ -124,11 +116,7 @@ class CsvReader(ILazyReader):
     def showPath(self):
         print(self.path)
 
-    def head(self, n: int = 1):
-        self.showPath()
-        return self.df.head(n)
-
-    def assemble(self, *preprocesses):
+    def assemble(self, *preprocesses) -> pd.DataFrame:
         """
         Cocatenate all chunks preprocessed by some functions.
         DataFrame is created only after calling this method.
@@ -144,23 +132,12 @@ class CsvReader(ILazyReader):
 
         with tqdm(self.reader) as _tqdm:
             _tqdm.set_postfix(path=self.path)
-            self.df = pd.concat(
+            df = pd.concat(
                 preprocessor(r) for r in _tqdm
             )
 
-        self.indexRange = [
-            self.df.index.min(),
-            self.df.index.max()
-        ]
-        return self
-
-    def assembleDataFrame(self, *preprocesses):
-        print("Deplicated. Use assemble()")
-        return self.assemble(*preprocesses)
+        return df
 
     def check(self, showFunc):
         self.showPath()
         return showFunc(self.df)
-
-    def getDataFrame(self):
-        return self.df

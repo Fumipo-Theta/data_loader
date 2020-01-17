@@ -10,14 +10,14 @@ class DictLoader(IDataLoader):
     df = dictLoader.read(dict_data, transformers=[f,g])
     """
 
-    def __init__(self, path_like="", meta={}, preprocessors=[]):
-        self.paths = PathList.to_strings(path_like)
+    def __init__(self, source, meta={}, preprocessors=[]):
+        self.source = source
         self.read_option = meta
         self.preprocessors = preprocessors
 
     def query(self, filter_func=identity):
-        return self.read(
-            self.paths,
+        return DictLoader.read(
+            self.source,
             self.read_option,
             [
                 *self.preprocessors,
@@ -25,6 +25,7 @@ class DictLoader(IDataLoader):
             ]
         )
 
-    def read(self, data, meta={}, transformers=[identity]):
+    @staticmethod
+    def read(source, meta={}, transformers=[identity]):
         return pip(*transformers)(
-            pd.DataFrame(data))
+            pd.DataFrame(source))
