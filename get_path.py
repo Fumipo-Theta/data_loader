@@ -1,6 +1,8 @@
 import os
 import glob
+from pathlib import Path
 import re
+from typing import Generator, List
 from func_helper import pip, tee, identity
 import iter_helper as it
 
@@ -60,8 +62,8 @@ class PathList:
         )(self.paths)
 
     @staticmethod
-    def match(*patterns):
-        def directory_from(*roots):
+    def match(*patterns: List[str]):
+        def directory_from(*search_roots: str):
             map_get_paths = it.mapping(pip(
                 getAllSubPath,
                 it.filtering(isMatchAll(patterns)),
@@ -69,7 +71,7 @@ class PathList:
 
             def concat(acc, e):
                 return [*acc, *e]
-            return PathList(it.reducing(concat)([])(map_get_paths(roots)))
+            return PathList(it.reducing(concat)([])(map_get_paths(search_roots)))
         return directory_from
 
     @staticmethod
@@ -92,9 +94,11 @@ class PathList:
         if type(pathLike) is PathList:
             return pathLike.files()
         elif type(pathLike) in [list, tuple]:
-            return pathLike
+            return sum([PathList.to_strings(path) for path in pathLike], [])
         elif type(pathLike) is str:
             return [pathLike]
+        elif isinstance(pathLike, Path):
+            return [str(pathLike.resolve())]
         else:
             print(pathLike)
             raise TypeError("Invalid data source type.")
