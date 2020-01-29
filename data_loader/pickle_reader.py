@@ -9,7 +9,7 @@ class PickleReader(ILazyReader):
         self.path = path
 
     def read(self, **kwargs):
-        self.reader = pd.read_pickle(self.path, **kwargs)
+        self.reader = pd.read_pickle(self.path)
 
     def assemble(self, *preprocesses) -> pd.DataFrame:
         preprocessor = pip(

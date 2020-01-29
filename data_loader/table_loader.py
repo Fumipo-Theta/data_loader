@@ -24,6 +24,16 @@ def parallel_read(meta, transformers):
     return read
 
 
+def concat_dfs(dfs):
+    _dfs = []
+    for df in dfs:
+        if type(df) is pd.DataFrame:
+            _dfs.append(df)
+        elif isinstance(df, dict):
+            _dfs += list(df.values())
+    return pd.concat(_dfs, sort=True)
+
+
 class TableLoader(IDataLoader):
     def __init__(self, source="", meta={}, preprocessors=[]):
         self.source = source
@@ -45,13 +55,11 @@ class TableLoader(IDataLoader):
     def read(source, meta={}, transformers=[], concat=True):
         paths = PathList.to_strings(source)
 
-        print(paths)
-
         # with Pool() as p:
         dfs = list(map(parallel_read(meta, transformers), paths))
 
         if concat:
-            return pd.concat(dfs, sort=True) if len(dfs) > 0 else []
+            return concat_dfs(dfs) if len(dfs) > 0 else []
         else:
             dfs
 
