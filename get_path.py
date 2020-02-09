@@ -35,6 +35,9 @@ class PathList:
     def __add__(self, pathlist):
         return PathList([*self.paths, *pathlist.paths])
 
+    def __len__(self):
+        return len(self.paths)
+
     def directories(self, verbose=False):
         return pip(
             it.filtering(os.path.isdir),

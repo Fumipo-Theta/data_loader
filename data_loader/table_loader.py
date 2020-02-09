@@ -40,6 +40,9 @@ class TableLoader(IDataLoader):
         self.read_option = meta
         self.preprocessors = preprocessors
 
+    def __len__(self):
+        return len(self.source)
+
     def query(self, filter_func=identity, concat=True):
         return TableLoader.read(
             self.source,
