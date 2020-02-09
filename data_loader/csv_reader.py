@@ -84,11 +84,9 @@ class CsvReader(ILazyReader):
             **read_csv_kwd
         }
 
-        if (re.search(r"\.csv$", self.path, re.IGNORECASE) != None):
-            self.reader = CsvReader.readCsv(
-                self.path, self.is_verbose, **arg)
-        else:
-            raise SystemError("Invalid file type.")
+        self.reader = CsvReader.readCsv(
+            self.path, self.is_verbose, **arg)
+
         return self
 
     @staticmethod

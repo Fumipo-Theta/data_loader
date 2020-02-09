@@ -68,6 +68,10 @@ class TableLoader(IDataLoader):
         if (re.search(r"\.csv$", path, re.IGNORECASE) != None):
             return CsvReader(path)
 
+        elif (re.search(r"\.dat$", path, re.IGNORECASE) != None):
+            print("CsvReader is used for reading .dat file")
+            return CsvReader(path)
+
         elif (re.search(r"\.xlsx?$", path, re.IGNORECASE) != None):
             return ExcelReader(path)
 
