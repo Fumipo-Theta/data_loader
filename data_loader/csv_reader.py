@@ -84,8 +84,12 @@ class CsvReader(ILazyReader):
             **read_csv_kwd
         }
 
-        self.reader = CsvReader.readCsv(
-            self.path, self.is_verbose, **arg)
+        try:
+            self.reader = CsvReader.readCsv(
+                self.path, self.is_verbose, **arg)
+        except Exception as e:
+            print(f"Erro in reading: {self.path}")
+            raise e
 
         return self
 
