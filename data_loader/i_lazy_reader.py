@@ -3,7 +3,7 @@ import pandas as pd
 
 
 class ILazyReader(metaclass=ABCMeta):
-    def __ini__(self, path: str):
+    def __init__(self, path: str):
         pass
 
     @abstractmethod

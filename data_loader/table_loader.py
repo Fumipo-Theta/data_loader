@@ -1,8 +1,9 @@
 from .i_data_loader import IDataLoader
 from .i_lazy_reader import ILazyReader
 from .csv_reader import CsvReader
-from .excel_reader import ExcelReader
+from .excel_reader import ExcelReader, matchExcel
 from .pickle_reader import PickleReader
+from .nothing_reader import NothingReader
 from ..get_path import PathList
 from func_helper import identity
 from typing import Type
@@ -75,11 +76,11 @@ class TableLoader(IDataLoader):
             print("CsvReader is used for reading .dat file")
             return CsvReader(path)
 
-        elif (re.search(r"\.xlsx?$", path, re.IGNORECASE) != None):
+        elif (re.search(matchExcel, path, re.IGNORECASE) != None):
             return ExcelReader(path)
 
         elif (re.search(r"\.pkl$", path, re.IGNORECASE)) != None:
             return PickleReader(path)
 
         else:
-            raise SystemError(f"Invalid file type: {path}")
+            return NothingReader(path)
