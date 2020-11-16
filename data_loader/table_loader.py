@@ -1,6 +1,7 @@
 from .i_data_loader import IDataLoader
 from .i_lazy_reader import ILazyReader
-from .csv_reader import CsvReader
+from .csv_reader_poor_impl import CsvReader as CsvReaderPoor
+from .csv_reader_rich_impl import CsvReader as CsvReaderRich
 from .excel_reader import ExcelReader, matchExcel
 from .pickle_reader import PickleReader
 from .nothing_reader import NothingReader
@@ -10,6 +11,7 @@ from typing import Type
 import pandas as pd
 import re
 from multiprocessing.dummy import Pool
+from multiprocessing import cpu_count
 
 ext = {
     "csv": r'\.[cC](sv|SV)$',
@@ -59,8 +61,8 @@ class TableLoader(IDataLoader):
     def read(source, meta={}, transformers=[], concat=True):
         paths = PathList.to_strings(source)
 
-        # with Pool() as p:
-        dfs = list(map(parallel_read(meta, transformers), paths))
+        with Pool() as p:
+            dfs = p.map(parallel_read(meta, transformers), paths)
 
         if concat:
             return concat_dfs(dfs) if len(dfs) > 0 else []
@@ -68,7 +70,8 @@ class TableLoader(IDataLoader):
             dfs
 
     @staticmethod
-    def IReader(path: str)->ILazyReader:
+    def IReader(path: str) -> ILazyReader:
+        CsvReader = CsvReaderRich if cpu_count() >= 10 else CsvReaderPoor
         if (re.search(r"\.csv$", path, re.IGNORECASE) != None):
             return CsvReader(path)
 
