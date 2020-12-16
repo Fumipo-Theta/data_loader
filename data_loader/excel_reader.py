@@ -10,11 +10,11 @@ matchExcel = r"^(?!.*\~\$).*\.xlsx?$"
 
 
 class ExcelReader(ILazyReader):
-    def __init__(self, path: str, verbose: bool=False):
+    def __init__(self, path: str, verbose: bool = False):
         self.is_verbose = verbose
         self.path = path
 
-    def read(self, header: int=0, **read_excel_kwargs):
+    def read(self, header: int = 0, **read_excel_kwargs):
 
         arg = {
             "header": header,
@@ -34,7 +34,7 @@ class ExcelReader(ILazyReader):
 
         return pd.read_excel(path, **kwargs)
 
-    def assemble(self, *preprocesses: DataFrame_transformer)->pd.DataFrame:
+    def assemble(self, *preprocesses: DataFrame_transformer) -> pd.DataFrame:
 
         preprocessor = pip(
             *preprocesses) if len(preprocesses) > 0 else identity
