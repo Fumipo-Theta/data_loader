@@ -1,7 +1,6 @@
 from .i_data_loader import IDataLoader
 from func_helper import pip, identity
 import pandas as pd
-from ..get_path import PathList
 
 
 class DictLoader(IDataLoader):
