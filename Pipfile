@@ -8,10 +8,9 @@ chardet = "*"
 pandas = "*"
 numpy = "*"
 tqdm = "*"
-xlrd = "1.2.0"
+xlrd = "==1.2.0"
 func-helper = {git = "https://github.com/Fumipo-Theta/func_helper"}
 iter-helper = {git = "https://github.com/Fumipo-Theta/iter_helper"}
-
 
 [dev-packages]
 
