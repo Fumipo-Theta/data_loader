@@ -5,7 +5,7 @@ from .csv_reader_rich_impl import CsvReader as CsvReaderRich
 from .excel_reader import ExcelReader, matchExcel
 from .pickle_reader import PickleReader
 from .nothing_reader import NothingReader
-from ..get_path import PathList
+from .get_path import PathList
 from func_helper import identity
 from typing import Type
 import pandas as pd
